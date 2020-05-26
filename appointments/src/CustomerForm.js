@@ -6,7 +6,7 @@ import {
   list,
   hasError,
   validateMany,
-  anyErrors
+  anyErrors,
 } from './formValidation';
 
 const Error = () => (
@@ -14,17 +14,17 @@ const Error = () => (
 );
 
 const mapStateToProps = ({
-  customer: { validationErrors, error, status }
+  customer: { validationErrors, error, status },
 }) => ({
   serverValidationErrors: validationErrors,
   error,
-  status
+  status,
 });
 const mapDispatchToProps = {
-  addCustomerRequest: customer => ({
+  addCustomerRequest: (customer) => ({
     type: 'ADD_CUSTOMER_REQUEST',
-    customer
-  })
+    customer,
+  }),
 };
 
 export const CustomerForm = connect(
@@ -38,7 +38,7 @@ export const CustomerForm = connect(
     addCustomerRequest,
     error,
     serverValidationErrors,
-    status
+    status,
   }) => {
     const submitting = status === 'SUBMITTING';
     const [validationErrors, setValidationErrors] = useState({});
@@ -46,20 +46,20 @@ export const CustomerForm = connect(
     const [customer, setCustomer] = useState({
       firstName,
       lastName,
-      phoneNumber
+      phoneNumber,
     });
 
     const validateSingleField = (fieldName, fieldValue) => {
       const result = validateMany(validators, {
-        [fieldName]: fieldValue
+        [fieldName]: fieldValue,
       });
       setValidationErrors({ ...validationErrors, ...result });
     };
 
     const handleChange = ({ target }) => {
-      setCustomer(customer => ({
+      setCustomer((customer) => ({
         ...customer,
-        [target.name]: target.value
+        [target.name]: target.value,
       }));
       if (hasError(validationErrors, target.name)) {
         validateSingleField(target.name, target.value);
@@ -75,16 +75,16 @@ export const CustomerForm = connect(
           /^[0-9+()\- ]*$/,
           'Only numbers, spaces and these symbols are allowed: ( ) + -'
         )
-      )
+      ),
     };
 
     const handleBlur = ({ target }) =>
       validateSingleField(target.name, target.value);
 
-    const renderError = fieldName => {
+    const renderError = (fieldName) => {
       const allValidationErrors = {
         ...validationErrors,
-        ...serverValidationErrors
+        ...serverValidationErrors,
       };
       if (hasError(allValidationErrors, fieldName)) {
         return (
@@ -95,7 +95,7 @@ export const CustomerForm = connect(
       }
     };
 
-    const handleSubmit = e => {
+    const handleSubmit = (e) => {
       e.preventDefault();
       const validationResult = validateMany(validators, customer);
       if (!anyErrors(validationResult)) {
