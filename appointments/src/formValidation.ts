@@ -1,23 +1,26 @@
-export const required: (
-  description: string
-) => (value: string) => string | undefined = (description) => (
-  value
-) => (!value || value.trim() === '' ? description : undefined);
+type validatorReturn = string | undefined;
+type validatorFunc = (description: string) => validatorReturn;
+type keyValidateFuncObj = { [key: string]: validatorFunc };
+
+export const required: (description: string) => validatorFunc = (
+  description
+) => (value) =>
+  !value || value.trim() === '' ? description : undefined;
 
 export const match = (re: string, description: string) => (
   value: string
 ) => (!value.match(re) ? description : undefined);
 
-export const list = (
-  ...validators: ((description: string) => string | undefined)[]
-) => (value: string) =>
-  validators.reduce<string | undefined>(
+export const list = (...validators: validatorFunc[]) => (
+  value: string
+) =>
+  validators.reduce<validatorReturn>(
     (result, validator) => result || validator(value),
     undefined
   );
 
 export const validateMany = (
-  validators: { [key: string]: (description: string) => string },
+  validators: keyValidateFuncObj,
   fields: { [key: string]: string }
 ): object =>
   Object.entries(fields).reduce(
