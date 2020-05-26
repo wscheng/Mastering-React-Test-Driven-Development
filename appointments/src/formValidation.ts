@@ -1,16 +1,17 @@
 export const required: (
   description: string
-) => (value: string) => string = (description) => (value) =>
-  !value || value.trim() === '' ? description : undefined;
+) => (value: string) => string | undefined = (description) => (
+  value
+) => (!value || value.trim() === '' ? description : undefined);
 
 export const match = (re: string, description: string) => (
   value: string
 ) => (!value.match(re) ? description : undefined);
 
 export const list = (
-  ...validators: ((description: string) => string)[]
+  ...validators: ((description: string) => string | undefined)[]
 ) => (value: string) =>
-  validators.reduce(
+  validators.reduce<string | undefined>(
     (result, validator) => result || validator(value),
     undefined
   );
@@ -36,5 +37,5 @@ export const hasError = (
   fieldName: string
 ) => validationErrors[fieldName] !== undefined;
 
-export const anyErrors = (errors: [string][]) =>
+export const anyErrors = (errors: { [key: string]: string }) =>
   Object.values(errors).some((error) => error !== undefined);

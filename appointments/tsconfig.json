@@ -8,6 +8,7 @@
     "outDir": "dist",
     "sourceMap": true,
     "noImplicitAny": true,
+    "strict": true,
     // https://stackoverflow.com/questions/45422573/property-entries-does-not-exist-on-type-objectconstructor
     "lib": ["es2017"]
   },
